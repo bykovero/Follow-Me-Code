@@ -33,4 +33,10 @@ while True:
 
     cv2.imshow("window", video) # Displaying webcam image
 
-    cv2.waitKey(1)
+    if cv2.waitKey(1) == ord('q'):
+        break
+
+    
+webcam_video.release()
+
+cv2.destroyAllWindows()
