@@ -38,6 +38,20 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
                 x, y, w, h = cv2.boundingRect(mask_contour)
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 3) #drawing rectangle
 
+
+                # Draw circle in the center of the bounding box
+                x2 = x + int(w/2)
+                y2 = y + int(h/2)
+                cv2.circle(image,(x2,y2),4,(0,255,0),-1)
+             
+                # Print the centroid coordinates (we'll use the center of the
+                # bounding box) on the image
+                text = "x: " + str(x2) + ", y: " + str(y2)
+                cv2.putText(image, text, (x2 - 10, y2 - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+    
+            
     cv2.imshow("mask image", mask) # Displaying mask image
 
     cv2.imshow("window", image) # Displaying webcam image
