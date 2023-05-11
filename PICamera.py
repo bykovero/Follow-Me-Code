@@ -7,7 +7,7 @@ import numpy as np
 camera = PiCamera()
 camera.resolution = (640, 480)
 camera.framerate = 32
-raw.Capture = PiRGBArray(camera, size =(640, 480))
+rawCapture = PiRGBArray(camera, size =(640, 480))
                     
 # Specifying upper and lower ranges of color to detect in hsv format
 lower = np.array([25, 80, 50])
@@ -18,7 +18,7 @@ upper = np.array([45, 255, 255]) # (These ranges will detect Yellow)
 #value: black (0) - colour (255)
 
 # Capturing webcam footage
-from frame in camera.capture_continuous(raw.Capture, format = "bgr", use_video_port=True):
+for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_port=True):
     image = frame.array
     
 
