@@ -31,6 +31,7 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
 
     mask_contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE) # Finding contours in mask image
 
+    drive_functs = [0,0,0]
     # Finding position of all contours
     if len(mask_contours) != 0:
         for mask_contour in mask_contours:
@@ -57,10 +58,9 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
                 else:
                     drive_functs = [1,0,0]
                 
-    else:
-        drive_functs = [0,0,0]
 
-            
+
+    cv2.putText(image, drive_functs,(0,0), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2 ) 
     cv2.imshow("mask image", mask) # Displaying mask image
 
     cv2.imshow("window", image) # Displaying webcam image
