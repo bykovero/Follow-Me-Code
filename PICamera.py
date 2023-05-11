@@ -49,8 +49,17 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
                 text = "x: " + str(x2) + ", y: " + str(y2)
                 cv2.putText(image, text, (x2 - 10, y2 - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                
+                if x2 < 320:
+                    drive_functs = [1,1,0]
+                elif x2 > 320:
+                    drive_functs = [1,0,1]
+                else:
+                    drive_functs = [1,0,0]
+                
+    else:
+        drive_functs = [0,0,0]
 
-    
             
     cv2.imshow("mask image", mask) # Displaying mask image
 
