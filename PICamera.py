@@ -31,7 +31,8 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
 
     mask_contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE) # Finding contours in mask image
 
-    drive_functs = [0,0,0]
+    #forwards - links - rechts - speed
+    drive_functs = [0,0,0,0]
     # Finding position of all contours
     if len(mask_contours) != 0:
         for mask_contour in mask_contours:
@@ -52,11 +53,11 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
                 
                 if x2 < 320:
-                    drive_functs = [1,1,0]
+                    drive_functs = [1,1,0,1]
                 elif x2 > 320:
-                    drive_functs = [1,0,1]
+                    drive_functs = [1,0,1,1]
                 else:
-                    drive_functs = [1,0,0]
+                    drive_functs = [1,0,0,1]
                 
 
 
