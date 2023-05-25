@@ -58,6 +58,8 @@ void turn_right(int speed_aussen, int speed_innen){
   digitalWrite(left_backward, LOW);
   digitalWrite(right_forward, HIGH);
   digitalWrite(right_backward, LOW);
+
+  delay(1000);
 }
 
 void turn_left(int speed_aussen, int speed_innen){
@@ -69,6 +71,8 @@ void turn_left(int speed_aussen, int speed_innen){
   digitalWrite(left_backward, LOW);
   digitalWrite(right_forward, HIGH);
   digitalWrite(right_backward, LOW);
+
+  delay(1000);
 }
 
 void loop() {
@@ -96,26 +100,28 @@ void loop() {
         speed += serialInString[i];
       }
 
-
       serialInString = "";
     }
 
-    Serial.println(left);
-    if (left == ("1")){
+    /*Serial.println(left);
+    Serial.println(right);
+    Serial.println(forward);
+    Serial.println(speed);*/
+
+    if (left == '1'){
       turn_left(turn_speed_aussen, turn_speed_innen);
-      Serial.println(left);
-      Serial.println(right);
-      Serial.println(forward);
-      Serial.println(speed);
     }
 
-    else if (right == "1"){
+    else if (right == '1'){
       turn_right(turn_speed_aussen, turn_speed_innen);
     }
 
-    else if (forward == "1"){
-      drive_forward(speed.toInt());
+    else if (forward == '1'){
+      drive_forward(speed.toInt());    
     }
-
+    
+    left = 0;
+    right = 0;
+    forward = 0;
   }
 }
