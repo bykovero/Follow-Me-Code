@@ -14,6 +14,10 @@ int min_speed = 50;
 int turn_speed_aussen = 70;
 int turn_speed_innen = 50;
 
+//SERIAL VARIABLEN
+String serialInString = "";
+
+
 void setup() {
   Serial.begin(9600);
 
@@ -72,8 +76,24 @@ void loop() {
   //Serial.println("I am working!");
   //Serial.println("Hallo!");
 
-  if (Serial.available() > 0) {
-    String data = Serial.readStringUntil('\n');
-    Serial.println(data);
+  while (Serial.available() > 0) {
+    int InChar = Serial.read();
+    
+    if (isDigit(InChar)){
+      serialInString += (char(inChar));
+    }
+    
+    if (inChar == '\n'){
+      char left = serialInString[0];
+      char right = serialInString[1];
+      char forward = serialInString[2];
+      
+      String speed = "";
+      for (int i = 3; i < serialInString.length(); i++){
+        speed += inString[i]
+      }
+      
+      serialInString = "";
+    }
   }
 }
