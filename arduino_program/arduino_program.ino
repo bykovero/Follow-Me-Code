@@ -32,7 +32,7 @@ void setup() {
 
 }
 
-void drive_forwards(int speed) {
+void drive_forward(int speed) {
   Serial.println("Driving forwards!");
   analogWrite(left_speed, speed);
   analogWrite(right_speed, speed);
@@ -77,23 +77,45 @@ void loop() {
   //Serial.println("Hallo!");
 
   while (Serial.available() > 0) {
-    int InChar = Serial.read();
-    
-    if (isDigit(InChar)){
+    char inChar = Serial.read();
+    char left;
+    char right;
+    char forward;
+    String speed = "";
+
+    if (isDigit(inChar)){
       serialInString += (char(inChar));
     }
     
     if (inChar == '\n'){
-      char left = serialInString[0];
-      char right = serialInString[1];
-      char forward = serialInString[2];
+      left = serialInString[0];
+      right = serialInString[1];
+      forward = serialInString[2];
       
-      String speed = "";
       for (int i = 3; i < serialInString.length(); i++){
-        speed += inString[i]
+        speed += serialInString[i];
       }
-      
+
+
       serialInString = "";
     }
+
+    Serial.println(left);
+    if (left == ("1")){
+      turn_left(turn_speed_aussen, turn_speed_innen);
+      Serial.println(left);
+      Serial.println(right);
+      Serial.println(forward);
+      Serial.println(speed);
+    }
+
+    else if (right == "1"){
+      turn_right(turn_speed_aussen, turn_speed_innen);
+    }
+
+    else if (forward == "1"){
+      drive_forward(speed.toInt());
+    }
+
   }
 }
