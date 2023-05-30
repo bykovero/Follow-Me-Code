@@ -120,6 +120,13 @@ void loop() {
       drive_forward(speed.toInt());    
     }
     
+    else if (forward == '0'){
+      digitalWrite(left_forward, LOW);
+      digitalWrite(left_backward, LOW);
+      digitalWrite(right_forward, LOW);
+      digitalWrite(right_backward, LOW);
+    }
+    
     left = 0;
     right = 0;
     forward = 0;
