@@ -7,12 +7,14 @@ int right_backward = 7;
 int left_speed = 10;
 int right_speed = 11;
 
+int led = 3;
+
 //SPEED VARIABLEN
 int max_speed = 100;
-int min_speed = 50;
+int min_speed = 60;
 
-int turn_speed_aussen = 70;
-int turn_speed_innen = 50;
+int turn_speed_aussen = 80;
+int turn_speed_innen = 60;
 
 //SERIAL VARIABLEN
 String serialInString = "";
@@ -32,7 +34,18 @@ void setup() {
 
 }
 
+void stop(){
+  analogWrite(led, 0);
+  Serial.println("Stop!");
+  
+  digitalWrite(left_forward, LOW);
+  digitalWrite(left_backward, LOW);
+  digitalWrite(right_forward, LOW);
+  digitalWrite(right_backward, LOW);
+}
+
 void drive_forward(int speed) {
+  analogWrite(led, 50);
   Serial.println("Driving forwards!");
   analogWrite(left_speed, speed);
   analogWrite(right_speed, speed);
@@ -46,6 +59,7 @@ void drive_forward(int speed) {
 }
 
 void turn_right(int speed_aussen, int speed_innen){
+  analogWrite(led, 50);
   Serial.println("Driving Right!");
 
   //Calculate indivudual speeds based on degree
@@ -63,6 +77,7 @@ void turn_right(int speed_aussen, int speed_innen){
 }
 
 void turn_left(int speed_aussen, int speed_innen){
+  analogWrite(led, 50);
   Serial.println("Driving Left!");
   analogWrite(left_speed, speed_innen);
   analogWrite(right_speed, speed_aussen);
@@ -117,14 +132,11 @@ void loop() {
     }
 
     else if (forward == '1'){
-      drive_forward(speed.toInt());    
+      drive_forward(speed.toInt()); 
     }
     
     else if (forward == '0'){
-      digitalWrite(left_forward, LOW);
-      digitalWrite(left_backward, LOW);
-      digitalWrite(right_forward, LOW);
-      digitalWrite(right_backward, LOW);
+      stop();
     }
     
     left = 0;
