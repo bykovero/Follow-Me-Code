@@ -3,6 +3,11 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import cv2
 import numpy as np
+import serial
+import time
+
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout = 1)
+ser.reset_input_buffer()
 
 camera = PiCamera()
 camera.resolution = (640, 480)
@@ -31,7 +36,7 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
 
     mask_contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE) # Finding contours in mask image
 
-    #forwards - links - rechts - speed
+    #links - rechts - forwards - speed
     drive_functs = [0,0,0,0]
     # Finding position of all contours
     if len(mask_contours) != 0:
@@ -53,11 +58,11 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
                 
                 if x2 < 320:
-                    drive_functs = [1,1,0,1]
-                elif x2 > 320:
-                    drive_functs = [1,0,1,1]
-                else:
                     drive_functs = [1,0,0,1]
+                elif x2 > 320:
+                    drive_functs = [0,1,0,1]
+                else:
+                    drive_functs = [0,0,1,1]
                 
 
 
