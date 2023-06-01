@@ -54,8 +54,6 @@ void drive_forward(int speed) {
   digitalWrite(left_backward, LOW);
   digitalWrite(right_forward, HIGH);
   digitalWrite(right_backward, LOW);
-  
-  delay(1000);
 }
 
 void turn_right(int speed_aussen, int speed_innen){
@@ -72,8 +70,6 @@ void turn_right(int speed_aussen, int speed_innen){
   digitalWrite(left_backward, LOW);
   digitalWrite(right_forward, HIGH);
   digitalWrite(right_backward, LOW);
-
-  delay(1000);
 }
 
 void turn_left(int speed_aussen, int speed_innen){
@@ -86,8 +82,6 @@ void turn_left(int speed_aussen, int speed_innen){
   digitalWrite(left_backward, LOW);
   digitalWrite(right_forward, HIGH);
   digitalWrite(right_backward, LOW);
-
-  delay(1000);
 }
 
 void loop() {
