@@ -1,0 +1,165 @@
+
+//PIN ASSIGNMENT
+int left_forward   = 9;                         //Left engine pins
+int left_backward  = 8;
+int right_forward  = 6;                         //Right engine pins
+int right_backward = 7;
+
+int left_speed  = 10;                           //Speed pins
+int right_speed = 11;
+
+int led = 3;                                    //Led pin
+
+int echo    = 4;                                //Ultrasonic sensor pins
+int trigger = 2;
+
+//-----------------------------------------------------------------------------------------------------------------------------
+
+//ULTRASONIC SENSOR VARIABLES
+int duration;                                   //Time span between sending out and receiving ultrasonic signal
+int distance;                                   //Distance between robot and possible object measured by sensor
+int min_distance = 10;                          //Minimum Distance allowed between robot and possible object
+
+//SPEED VARIABLES
+int turn_speed_outside = 120;                   //Fixed speed of outer wheel while turning
+int turn_speed_inside  = 60;                    //Fixed speed of inner wheel while turning
+
+//SERIAL VARIABLES
+String serialInString = "";                     //Empty string for serial communication
+
+//-----------------------------------------------------------------------------------------------------------------------------
+
+//ONE TIME SET UP
+void setup(){
+  Serial.begin(9600);                           //Initialisation serial with baud rate 9600
+
+  //Setting pins to output or input
+  pinMode(left_forward, OUTPUT);                //Left engine
+  pinMode(left_backward, OUTPUT);
+  pinMode(right_forward, OUTPUT);               //Right engine
+  pinMode(right_backward, OUTPUT);
+
+  pinMode(left_speed, OUTPUT);                  //Speed
+  pinMode(right_speed, OUTPUT);
+
+  pinMode(echo, INPUT);                         //Ultrasonic sensor
+  pinMode(trigger, OUTPUT);
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------
+
+//FUNCTION TO STOP
+void stop(){
+  analogWrite(led, 0);                          //Led stops glowing
+  
+  digitalWrite(left_forward, LOW);              //Both wheels stop
+  digitalWrite(left_backward, LOW);
+  digitalWrite(right_forward, LOW);
+  digitalWrite(right_backward, LOW);
+}
+
+//FUNCTION TO DRIVE FORWARD
+void drive_forward(int speed){                  //"speed" value received from Raspberry via serial communication
+  analogWrite(led, 50);                         //Led glows
+  
+  analogWrite(left_speed, speed);               //Set speed of engines based on "speed"
+  analogWrite(right_speed, speed);
+
+  digitalWrite(left_forward, HIGH);             //Both wheels drive forward
+  digitalWrite(left_backward, LOW);
+  digitalWrite(right_forward, HIGH);
+  digitalWrite(right_backward, LOW);
+  delay(200);                                   //Delay to prevent disturbance while driving
+}
+
+//FUNCTION TO TURN RIGHT
+void turn_right(int speed_outside, int speed_inside){                      //"turn_speed_outside" and "turn_speed_inside" passed as "speed_outside" and "speed_inside"
+  analogWrite(led, 50);                         //Led glows
+
+  analogWrite(left_speed, speed_outside);       //Set speed of left wheel based on "speed_outside"
+  analogWrite(right_speed, speed_inside);       //Set speed of right wheel based on "speed_inside"
+
+  digitalWrite(left_forward, HIGH);             //Both wheels drive forward
+  digitalWrite(left_backward, LOW);
+  digitalWrite(right_forward, HIGH);
+  digitalWrite(right_backward, LOW);
+  delay(200);                                   //Delay to prevent disturbance while driving
+}
+
+//FUNCTION TO TURN LEFT
+void turn_left(int speed_outside, int speed_inside){                       //"turn_speed_outside" and "turn_speed_inside" passed as "speed_outside" and "speed_inside"
+  analogWrite(led, 50);                         //Led glows
+
+  analogWrite(left_speed, speed_inside);        //Set speed of left wheel based on "speed_inside"
+  analogWrite(right_speed, speed_outside);      //Set speed of left wheel based on "speed_outside"
+
+  digitalWrite(left_forward, HIGH);             //Both wheels drive forward
+  digitalWrite(left_backward, LOW);
+  digitalWrite(right_forward, HIGH);
+  digitalWrite(right_backward, LOW);
+  delay(200);                                   //Delay to prevent disturbance while driving
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------
+
+//LOOP RUNS CONTINUOUSLY
+void loop(){
+
+  //Measuring distance between robot and possible object
+  digitalWrite(trigger, HIGH);  
+  delayMicroseconds(10);                        //10µ second trigger-signal
+  digitalWrite(trigger, LOW);
+
+  duration = pulseIn(echo, HIGH);               //Measure the length of the signal
+  distance = (duration/2)/29.1;                 //Calculate distance based on duration
+
+  if (distance <= min_distance){                //If "distance" is less or the same as "min_distance" -> execute stop()
+    stop();
+  }
+
+  else{                                         //If "distance" is more than "min_distance"
+    while (Serial.available() > 0){             //Checking if serial is available
+      char inChar  = Serial.read();             //Char "inChar" read from serial
+      char left;                                //Local chars for driving commands
+      char right;
+      char forward;
+      String speed = "";                        //Empty string for speed
+
+      if (isDigit(inChar)){                     //If "inChar" is a digit
+        serialInString += (char(inChar));       //"inChar" is made to "serialInString"
+      }
+      
+      if (inChar == '\n'){                      //If "inChar" is a new line ('\n')
+        left    = serialInString[0];            //Index '0' of "serialInString" is assigned to "left"
+        right   = serialInString[1];            //Index '1' of "serialInString" is assigned to "right"
+        forward = serialInString[2];            //Index '2' of "serialInString" is assigned to "forward"
+        
+        for (int i = 3; i < serialInString.length(); i++){                 //For-loop to add index '3' + remaining indices of serialInSpring to string "speed"
+          speed += serialInString[i];
+        }
+
+        serialInString = "";                     //Emptying serialInString                                   
+      }
+
+      if (left == '1'){                          //If "left" is 1 -> execute turn_left(turn_speed_outside, turn_speed_inside) once
+        turn_left(turn_speed_outside, turn_speed_inside);
+      }
+
+      else if (right == '1'){                    //If "right" is 1 -> execute turn_right(turn_speed_outside, turn_speed_inside) once
+        turn_right(turn_speed_outside, turn_speed_inside);
+      }
+
+      else if (forward == '1'){                  //If "forward" is 1 -> execute drive_forward(speed.toInt()) once
+        drive_forward(speed.toInt());            //Speed for wheels is obtained by converting string "speed" to int "speed"
+      }
+      
+      else if (forward == '0'){                  //If "forward" is 0 -> execute stop() once
+        stop();
+      }
+      
+      left    = '0';                             //Setting "left", "right" and "forward" back to '0' to avoide disturbance
+      right   = '0';
+      forward = '0';
+    }
+  }
+}
