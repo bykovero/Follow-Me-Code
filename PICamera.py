@@ -107,3 +107,8 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
     
     rawCapture.truncate(0) #releasing the frame, required by the module/system
     
+    if cv2.waitKey(1) == ord('q'):  #waiting for keypress to end program, necessary for opencv to show windows
+        break
+        
+cv2.destroyAllWindows()
+    
